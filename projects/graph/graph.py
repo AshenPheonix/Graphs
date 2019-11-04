@@ -95,20 +95,22 @@ class Graph:
         temp.enqueue(starting_vertex)
         done=[]
         path={
-            starting_vertex:None
+            starting_vertex:'start'
         }
-        print(f'pathing from {starting_vertex} to {destination_vertex}')
-        while temp.size>0:
+        print(f'pathing from {starting_vertex} to {destination_vertex}: BFS')
+        while temp.size()>0:
             current = temp.dequeue()
             if current==destination_vertex:
                 ret = f''
-                while path.get(current):
+                while path.get(current) is not 'start':
                     ret = f'{current} {ret}'
                     current=path.get(current)
-                return ret
+                return f'{starting_vertex} {ret}'
             else:
                 for node in self.vertices.get(current):
-                    temp.push(node)
+                    if not node in done:
+                        temp.enqueue(node)
+                        done.append(node)
                     if not path.get(node,None):
                         path[node]=current
 
@@ -121,10 +123,33 @@ class Graph:
         starting_vertex to destination_vertex in
         depth-first order.
         """
-        pass  # TODO
+        # pass  # TODO
+
+        temp = Stack()
+        temp.push(starting_vertex)
+        done=[]
+        path={
+            starting_vertex:'start'
+        }
+        print(f'pathing from {starting_vertex} to {destination_vertex}: DFS')
+        while temp.size()>0:
+            current = temp.pop()
+            if current==destination_vertex:
+                ret = f''
+                while path.get(current) is not 'start':
+                    ret = f'{current} {ret}'
+                    current=path.get(current)
+                return f'{starting_vertex} {ret}'
+            else:
+                for node in self.vertices.get(current):
+                    if not node in done:
+                        temp.push(node)
+                        done.append(node)
+                    if not path.get(node,None):
+                        path[node]=current
 
 
-
+        print('Not a Vertex/no path')
 
 
 if __name__ == '__main__':
@@ -200,4 +225,4 @@ if __name__ == '__main__':
         [1, 2, 4, 6]
         [1, 2, 4, 7, 6]
     '''
-    # print(graph.dfs(1, 6))
+    print(graph.dfs(1, 6))
