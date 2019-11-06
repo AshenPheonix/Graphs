@@ -1,5 +1,3 @@
-
-
 class User:
     def __init__(self, name):
         self.name = name
@@ -47,7 +45,11 @@ class SocialGraph:
         # !!!! IMPLEMENT ME
 
         # Add users
-
+        if avgFriendships < numUsers:
+            print("Not enough people")
+        else:
+            for userId in range(numUsers):
+                self.addUser('generated')
         # Create friendships
 
     def getAllSocialPaths(self, userID):
@@ -61,8 +63,49 @@ class SocialGraph:
         """
         visited = {}  # Note that this is a dictionary, not a set
         # !!!! IMPLEMENT ME
+        toVisit=Queue()
+        toVisit.push(userID)
+        while len(toVisit>0):
+            current = toVisit.pop()
+            for friend in self.friendships[current]:
+                if not visited[friend]:
+                    visited[friend]=self.friendships[current].copy()
+                    visited[friend].add(current)
+                    toVisit.push(friend)
+
         return visited
 
+class Queue():
+    def __init__(self):
+        self.size=0
+        self.head=None
+        self.tail=None
+    
+    def push(self, data):
+        self.size+=1
+        if self.tail:
+            self.tail.next=Cell(data)
+        else:
+            self.tail=Cell(data)
+    
+    def pop(self):
+        if not self.head:
+            return None
+        else:
+            self.size-=1
+            temp=self.head.data
+            self.head=self.head.next
+    
+    def size(self):
+        return self.size
+
+
+
+    
+class Cell:
+    def __init__(self,data,next=None):
+        self.data=data
+        self.next=next
 
 if __name__ == '__main__':
     sg = SocialGraph()
