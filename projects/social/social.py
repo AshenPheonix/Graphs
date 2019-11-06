@@ -90,20 +90,22 @@ class SocialGraph:
         extended network with the shortest friendship path between them.
 
         The key is the friend's ID and the value is the path.
-        # """
-        # visited = {}  # Note that this is a dictionary, not a set
-        # # !!!! IMPLEMENT ME
-        # toVisit=Queue()
-        # toVisit.push(userID)
-        # while len(toVisit>0):
-        #     current = toVisit.pop()
-        #     for friend in self.friendships[current]:
-        #         if not visited[friend]:
-        #             visited[friend]=self.friendships[current].copy()
-        #             visited[friend].add(current)
-        #             toVisit.push(friend)
+        """
+        visited = {}  # Note that this is a dictionary, not a set
+        # !!!! IMPLEMENT ME
+        toVisit=Queue()
+        toVisit.push(userID)
+        visited[userID]=set([userID])
+        while toVisit.size>0:
+            current = toVisit.pop()
+            for friend in self.friendships[current]:
+                if not visited.get(friend):
+                    visited[friend]=visited.get(current).copy()
+                    visited[friend].add(current)
+                    visited[friend].add(friend)
+                    toVisit.push(friend)
 
-        # return visited
+        return visited
 
 class Queue():
     def __init__(self):
@@ -112,11 +114,14 @@ class Queue():
         self.tail=None
     
     def push(self, data):
-        self.size+=1
-        if self.tail:
+        if self.size>0:
             self.tail.next=Cell(data)
+            self.tail=self.tail.next
         else:
-            self.tail=Cell(data)
+            temp=Cell(data)
+            self.tail=temp
+            self.head=temp
+        self.size+=1
     
     def pop(self):
         if not self.head:
@@ -125,6 +130,7 @@ class Queue():
             self.size-=1
             temp=self.head.data
             self.head=self.head.next
+            return temp
     
     def size(self):
         return self.size
