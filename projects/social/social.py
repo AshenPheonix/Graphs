@@ -1,3 +1,6 @@
+import random
+import math
+
 class User:
     def __init__(self, name):
         self.name = name
@@ -45,11 +48,38 @@ class SocialGraph:
         # !!!! IMPLEMENT ME
 
         # Add users
-        if avgFriendships < numUsers:
+        if avgFriendships > numUsers:
             print("Not enough people")
         else:
+            ids=[]
             for userId in range(numUsers):
                 self.addUser('generated')
+                temp=round(random.gauss(avgFriendships,1))
+                if temp<0:
+                    temp=0
+                ids.extend([self.lastID]*int(temp))
+
+
+            random.shuffle(ids)
+            # ids=ids[:avgFriendships*numUsers//2]
+            
+            friends={}
+            while len(ids)>1:
+                f1=ids.pop()
+                f2=ids.pop()
+                held=[]
+
+                if not friends.get(f1):
+                    friends[f1]=set()
+
+                while f2==f1 and not f2 in friends.get(f1) and len(ids)>0:
+                    held.append(f2)
+                    f2=ids.pop()
+                if not f2 in friends.get(f1):
+                    ids.extend(held)
+                    self.addFriendship(f1,f2)
+                    friends.get(f1).add(f2)
+
         # Create friendships
 
     def getAllSocialPaths(self, userID):
@@ -60,20 +90,20 @@ class SocialGraph:
         extended network with the shortest friendship path between them.
 
         The key is the friend's ID and the value is the path.
-        """
-        visited = {}  # Note that this is a dictionary, not a set
-        # !!!! IMPLEMENT ME
-        toVisit=Queue()
-        toVisit.push(userID)
-        while len(toVisit>0):
-            current = toVisit.pop()
-            for friend in self.friendships[current]:
-                if not visited[friend]:
-                    visited[friend]=self.friendships[current].copy()
-                    visited[friend].add(current)
-                    toVisit.push(friend)
+        # """
+        # visited = {}  # Note that this is a dictionary, not a set
+        # # !!!! IMPLEMENT ME
+        # toVisit=Queue()
+        # toVisit.push(userID)
+        # while len(toVisit>0):
+        #     current = toVisit.pop()
+        #     for friend in self.friendships[current]:
+        #         if not visited[friend]:
+        #             visited[friend]=self.friendships[current].copy()
+        #             visited[friend].add(current)
+        #             toVisit.push(friend)
 
-        return visited
+        # return visited
 
 class Queue():
     def __init__(self):
