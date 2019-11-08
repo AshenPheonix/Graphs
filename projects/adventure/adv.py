@@ -130,7 +130,6 @@ class Cell:
         return f'{self.data}'
 
 def BFS(key1,key2,roomList):
-    print(f"finding {key2} from {key1}")
     visited={
         key1:[]
     }
@@ -150,7 +149,6 @@ def BFS(key1,key2,roomList):
                     toVisit.push(Cell(value))
                 
     print('Could not locate')
-    # print(visited)
     return None
 
 ERRORTEST=[]
@@ -181,36 +179,18 @@ while len(toVisit)>0:
             switch=True
             loopDir=direction
             loop=True
-    
-    # if times>1:
-    #     neighbors = node.getNeighbors()
-    #     depths=[]
-    #     for neighbor in neighbors:
-    #         depth = paths[neighbor[1]].depth(roomGraph,current,neighbor[1])
-    #         depths.append((neighbor[1],depth))
-    #     depths.sort(key=lambda e:e[1])
-    #     cat=[i[0] for i in depths]
-    #     print(depths,cat)
-    #     toVisit=toVisit[:-len(depths)]
-    #     toVisit.extend(reversed(cat))
-        
         
     if loopDir and node.hasNeighbor(toVisit[-1]):
         loopDir=None
     if not switch and len(toVisit)>0:
         found=False
         before=traversalPath.copy()
-        if current==178:
-            print("searching from 178 with past\n",before[-10:])
         longDone=0
         while not found:
             if not paths.get(node.back[1]):
-                print('in path',current)
                 result = BFS(current,toVisit[-1],paths)
                 traversalPath = before
-                # print(traversalPath)
                 traversalPath.extend(result)
-                # print(traversalPath)
                 loopDir="?"
                 found=True
                 break
@@ -225,26 +205,19 @@ while len(toVisit)>0:
         traversalPath.append(loopDir)
 
 
-# for item in paths.values():
-#     print(item)
-
-
 # TRAVERSAL TEST
 visited_rooms = set()
 player.currentRoom = world.startingRoom
 visited_rooms.add(player.currentRoom)
-print("acutal")
 for move in traversalPath:
     player.travel(move,traversalPath)
     visited_rooms.add(player.currentRoom)
 
 if len(visited_rooms) == len(roomGraph):
     print(f"TESTS PASSED: {len(traversalPath)} moves, {len(visited_rooms)} rooms visited")
-    print(traversalPath)
 else:
     print("TESTS FAILED: INCOMPLETE TRAVERSAL")
     print(f"{len(roomGraph) - len(visited_rooms)} unvisited rooms")
-    print(traversalPath)
 
 
 
