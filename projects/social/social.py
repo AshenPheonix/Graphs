@@ -59,9 +59,7 @@ class SocialGraph:
                     temp=0
                 ids.extend([self.lastID]*int(temp))
 
-
             random.shuffle(ids)
-            # ids=ids[:avgFriendships*numUsers//2]
             
             friends={}
             while len(ids)>1:
