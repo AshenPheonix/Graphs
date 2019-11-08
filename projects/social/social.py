@@ -1,4 +1,5 @@
-
+import random
+import math
 
 class User:
     def __init__(self, name):
@@ -47,6 +48,35 @@ class SocialGraph:
         # !!!! IMPLEMENT ME
 
         # Add users
+        if avgFriendships > numUsers:
+            print("Not enough people")
+        else:
+            ids=[]
+            for userId in range(numUsers):
+                self.addUser('generated')
+                temp=round(random.gauss(avgFriendships,1))
+                if temp<0:
+                    temp=0
+                ids.extend([self.lastID]*int(temp))
+
+            random.shuffle(ids)
+            
+            friends={}
+            while len(ids)>1:
+                f1=ids.pop()
+                f2=ids.pop()
+                held=[]
+
+                if not friends.get(f1):
+                    friends[f1]=set()
+
+                while f2==f1 and not f2 in friends.get(f1) and len(ids)>0:
+                    held.append(f2)
+                    f2=ids.pop()
+                if not f2 in friends.get(f1):
+                    ids.extend(held)
+                    self.addFriendship(f1,f2)
+                    friends.get(f1).add(f2)
 
         # Create friendships
 
@@ -61,8 +91,55 @@ class SocialGraph:
         """
         visited = {}  # Note that this is a dictionary, not a set
         # !!!! IMPLEMENT ME
+        toVisit=Queue()
+        toVisit.push(userID)
+        visited[userID]=set([userID])
+        while toVisit.size>0:
+            current = toVisit.pop()
+            for friend in self.friendships[current]:
+                if not visited.get(friend):
+                    visited[friend]=visited.get(current).copy()
+                    visited[friend].add(current)
+                    visited[friend].add(friend)
+                    toVisit.push(friend)
+
         return visited
 
+class Queue():
+    def __init__(self):
+        self.size=0
+        self.head=None
+        self.tail=None
+    
+    def push(self, data):
+        if self.size>0:
+            self.tail.next=Cell(data)
+            self.tail=self.tail.next
+        else:
+            temp=Cell(data)
+            self.tail=temp
+            self.head=temp
+        self.size+=1
+    
+    def pop(self):
+        if not self.head:
+            return None
+        else:
+            self.size-=1
+            temp=self.head.data
+            self.head=self.head.next
+            return temp
+    
+    def size(self):
+        return self.size
+
+
+
+    
+class Cell:
+    def __init__(self,data,next=None):
+        self.data=data
+        self.next=next
 
 if __name__ == '__main__':
     sg = SocialGraph()
